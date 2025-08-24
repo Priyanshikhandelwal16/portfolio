@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Browser Extensions Manager</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css"
+    rel="stylesheet"/>
+  <link href='https://fonts.googleapis.com/css?family=Work Sans' rel='stylesheet'>  
+</head>
+<body>
+   <!-- Loader -->
+<div id="loader">
+  <div class="spinner"></div>
+  <p>0%</p>
+</div>
+
+<!-- Custom Cursor -->
+<div class="cursor"></div>
+<div class="cursor-outline"></div>
+
+   <div id="main">
+      <section id="hero">
+      <nav id="nav-bar">
+  <h2>Priyanshi</h2>
+  <ul id="nav-links">
+    <li><a href="#About">About</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#Contact">Contact</a></li>
+    <li>
+      <a href="resume.pdf" class="resume-btn" download>Download Resume</a>
+    </li>
+  </ul>
+  <div class="nav-actions">
+    <button id="theme-toggle"><i class="ri-moon-line"></i></button>
+  </div>
+  <div id="hamburger">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+  <div id="nav-close">&#10005;</div>
+</nav>
+
+          <div id="hero-content">
+           <div id="hero-left">
+  <p id="hero-para">Hello, <br> I'm <span>Priyanshi Khandelwal</span><br> Frontend Developer | Turning Ideas Into Interactive Websites.</p>
+  
+  <div class="hero-buttons">
+    <a href="#contact" class="btn-primary">Hire Me</a>
+  </div>
+</div>
+            <div id="hero-right">
+             <img src="hero-vector (1).svg" alt="Illustration" />
+            </div>
+          </div>
+      </section>
+
+      <section id="About">
+         <div id="about-left">
+           <img src="about-me.svg" alt="">
+         </div>
+         <div id="about-right">
+           <h2>About <span>Me</span></h2>
+           <p>I'm a passionate Frontend Developer who loves creating clean, modern, and user-friendly web applications. I specialize in React.js, JavaScript, and responsive design, blending functionality with sleek UI/UX.
+<br>
+<br>
+My journey into web development started with curiosity, and over time it has grown into a strong passion for building projects that solve real problems and look visually appealing. Currently, I am sharpening my skills with React, TailwindCSS, and modern JavaScript frameworks, while exploring backend basics to become more versatile.
+<br>
+<br>
+Beyond coding, I enjoy learning about design trends, contributing to small projects, and exploring how technology can improve everyday life. I'm excited to grow as a developer and collaborate on impactful projects.</p>
+         </div>
+      </section>
+
+   <section id="skills" class="skills-section">
+  <h2 class="section-title">My <span>Skills</span></h2>
+
+  <div class="skills-container">
+
+    <!-- Programming Languages -->
+    <div class="skill-category">
+      <h3>Programming Languages</h3>
+      <div class="skill-bubbles">
+        <span class="skill" data-level="60">C (Basics)</span>
+        <span class="skill" data-level="70">OOPs</span>
+        <span class="skill" data-level="80">JavaScript</span>
+      </div>
+    </div>
+
+    <!-- Web Development -->
+    <div class="skill-category">
+      <h3>Web Development</h3>
+      <div class="skill-bubbles">
+        <span class="skill" data-level="90">HTML/CSS</span>
+        <span class="skill" data-level="80">JavaScript</span>
+        <span class="skill" data-level="75">Tailwind CSS</span>
+        <span class="skill" data-level="70">Bootstrap</span>
+        <span class="skill" data-level="65">GSAP & ScrollTrigger</span>
+        <span class="skill" data-level="50">MongoDB</span>
+        <span class="skill" data-level="55">Firebase</span>
+      </div>
+    </div>
+
+    <!-- Soft Skills -->
+    <div class="skill-category">
+      <h3>Soft Skills</h3>
+      <div class="skill-bubbles">
+        <span class="skill" data-level="85">Adaptability</span>
+        <span class="skill" data-level="90">Quick Learning</span>
+        <span class="skill" data-level="80">Team Collaboration</span>
+        <span class="skill" data-level="85">Communication</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<section id="projects">
+  <div class="container">
+    <!-- Heading -->
+    <h2>Projects</h2>
+
+    <!-- Project Grid -->
+    <div class="project-grid">
+      <!-- Project Card 1 -->
+      <div class="project-card">
+        <img src="project1.png" alt="Project 1">
+        <div class="card-content">
+          <h3>Explore Her Way</h3>
+          <p>
+           Discover Rajasthan through curated travel experiences designed exclusively for women and girls. Empowering solo and group journeys with safety, style, and personalized planning — because your adventure should always feel like your own.
+          </p>
+          <div class="card-buttons">
+            <a href="#" target="_blank" class="live-btn">Live</a>
+            <a href="#" target="_blank" class="github-btn">GitHub</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Project Card 2 -->
+      <div class="project-card">
+        <img src="project2.png" alt="Project 2">
+        <div class="card-content">
+          <h3>ISRO Reimagine Project</h3>
+          <p>
+            Designed an animated and responsive ISRO-themed website using HTML, CSS, JS, GSAP, and Figma — delivering smooth scroll and engaging UI transitions.
+          </p>
+          <div class="card-buttons">
+            <a href="#" target="_blank" class="live-btn">Live</a>
+            <a href="#" target="_blank" class="github-btn">GitHub</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Project Card 3 -->
+      <div class="project-card">
+        <img src="project3.png" alt="Project 3">
+        <div class="card-content">
+          <h3>E-Commerce Website</h3>
+          <p>
+           A sleek and responsive online store built with HTML, CSS, and JavaScript. Designed to give users a smooth shopping experience with clean UI, real-time interactions, and optimized performance across all devices.
+          </p>
+          <div class="card-buttons">
+            <a href="#" target="_blank" class="live-btn">Live</a>
+            <a href="#" target="_blank" class="github-btn">GitHub</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <img src="project4.png" alt="Project 3">
+        <div class="card-content">
+          <h3>Ai-Chatbot</h3>
+          <p>
+           A sleek and responsive online store built with HTML, CSS, and JavaScript. Designed to give users a smooth shopping experience with clean UI, real-time interactions, and optimized performance across all devices.
+          </p>
+          <div class="card-buttons">
+            <a href="https://chatbot1602.netlify.app/" target="_blank" class="live-btn">Live</a>
+            <a href="#" target="_blank" class="github-btn">GitHub</a>
+          </div>
+        </div>
+      </div>
+
+        <div class="project-card">
+        <img src="project5.png" alt="Project 3">
+        <div class="card-content">
+          <h3>INTUITIVE QUIZ HUB</h3>
+          <p>
+           A sleek and responsive online store built with HTML, CSS, and JavaScript. Designed to give users a smooth shopping experience with clean UI, real-time interactions, and optimized performance across all devices.
+          </p>
+          <div class="card-buttons">
+            <a href="https://quizhub1.netlify.app/" target="_blank" class="live-btn">Live</a>
+            <a href="https://github.com/Priyanshikhandelwal16/Quiz-HUB.git" target="_blank" class="github-btn">GitHub</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section  id="Contact">
+    <!-- Left Side Info -->
+    <div class="contact-section">
+      <div class="contact-info">
+      <div class="info-box">
+        <i class="ri-phone-fill"></i>
+        <div>
+          <h4>Phone</h4>
+          <p>+91 98765 43210</p>
+        </div>
+      </div>
+      <div class="info-box">
+        <i class="ri-mail-fill"></i>
+        <div>
+          <h4>Email</h4>
+          <p>youremail@gmail.com</p>
+        </div>
+      </div>
+      <div class="info-box">
+        <i class="ri-map-pin-2-fill"></i>
+        <div>
+          <h4>Location</h4>
+          <p>Udaipur, Rajasthan</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Side Form -->
+    <div class="contact-form">
+      <h2>Get in Touch</h2>
+      <form id="contact-form">
+        <input type="text" placeholder="Your Name" required>
+        <input type="email" placeholder="Your Email" required>
+        <input type="text" placeholder="Subject" required>
+        <textarea placeholder="Your Message" required></textarea>
+        <button type="submit">Send Message</button>
+        <p id="response-msg"></p>
+      </form>
+    </div>
+    </div>
+  </section>
+
+  <!-- ====== Footer Section ====== -->
+<footer class="footer">
+  <div class="footer-container">
+    
+    <!-- Logo + About -->
+    <div class="footer-about">
+      <h2 class="logo">Priyanshi<span>.</span></h2>
+      <p>Crafting modern, user-friendly, and responsive web experiences with creativity and passion.</p>
+    </div>
+
+    <!-- Links -->
+    <div class="footer-links">
+      <h3>Quick Links</h3>
+      <ul>
+        <li><a href="#hero"><i class="ri-arrow-right-s-line"></i> Home</a></li>
+        <li><a href="#About"><i class="ri-arrow-right-s-line"></i> About</a></li>
+        <li><a href="#projects"><i class="ri-arrow-right-s-line"></i> Projects</a></li>
+        <li><a href="#Contact"><i class="ri-arrow-right-s-line"></i> Contact</a></li>
+      </ul>
+    </div>
+
+    <!-- Socials -->
+    <div class="footer-socials">
+      <h3>Connect</h3>
+      <div class="social-icons">
+        <a href="#"><i class="ri-instagram-fill"></i></a>
+        <a href="#"><i class="ri-github-fill"></i></a>
+        <a href="#"><i class="ri-linkedin-box-fill"></i></a>
+        <a href="#"><i class="ri-twitter-x-fill"></i></a>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Bottom -->
+  <div class="footer-bottom">
+    <p>© 2025 Priyanshi | All Rights Reserved</p>
+  </div>
+</footer>
+   </div>
+    <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
+      <script>
+        (function(){
+          emailjs.init("UvtZ1cmgVB3_QgPE9"); // Replace with your EmailJS Public Key
+        })();
+      </script>
+      <script src="https://cdn.jsdelivr.net/npm/TagCloud@2.2.0/dist/TagCloud.min.js"></script>
+      <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+  <script src="script.js"></script>
+</body>
+</html>
