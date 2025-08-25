@@ -147,7 +147,7 @@ let tl = gsap.timeline();
 let counter = { value: 0 };
 tl.to(counter, {
   value: 100,
-  duration: 2.0,
+  duration: 1.0,
   ease: "power1.inOut",
   onUpdate: () => {
     document.querySelector("#loader p").innerText =
