@@ -118,7 +118,6 @@ button:hover,
 #main {
   min-height: 100vh;
   width: 100%;
-  display: none;
 }
 
 #loader {
@@ -1017,6 +1016,7 @@ button:hover,
   color: var(--text-primary);
   cursor: pointer;
 }
+
 
 /* ===== Responsive Design ===== */
 @media (min-width: 640px) {
