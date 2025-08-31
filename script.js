@@ -285,6 +285,229 @@ class HeroAnimations {
 }
 
 // =========================
+// ENHANCED PROJECT CARD ANIMATIONS (COLOR-SAFE)
+// =========================
+class ProjectCardAnimations {
+  constructor() {
+    this.projectCards = Utils.selectElements('.project-card');
+    this.animatedCards = new Set();
+    this.init();
+  }
+
+  init() {
+    if (!this.projectCards.length) return;
+    
+    this.setupInitialStates();
+    this.setupIndividualScrollTriggers();
+    this.setupHoverEffects();
+  }
+
+  setupInitialStates() {
+    // Set initial state for all project cards (NO COLOR CHANGES)
+    this.projectCards.forEach(card => {
+      gsap.set(card, {
+        y: 80,
+        autoAlpha: 0,
+        scale: 0.9,
+        transformOrigin: "center center"
+      });
+    });
+  }
+
+  setupIndividualScrollTriggers() {
+    this.projectCards.forEach((card, index) => {
+      // Create individual scroll trigger for each card
+      ScrollTrigger.create({
+        trigger: card,
+        start: "top 85%",
+        once: true,
+        onEnter: () => {
+          if (this.animatedCards.has(index)) return;
+          
+          // Delay each card by 200ms
+          setTimeout(() => {
+            this.animateCardIn(card, index);
+          }, index * 200);
+        }
+      });
+    });
+  }
+
+  animateCardIn(card, index) {
+    if (this.animatedCards.has(index)) return;
+    
+    this.animatedCards.add(index);
+    
+    // Simple, smooth entrance animation (NO COLOR CHANGES)
+    const tl = gsap.timeline();
+    
+    // Main card animation
+    tl.to(card, {
+      duration: 1,
+      y: 0,
+      autoAlpha: 1,
+      scale: 1,
+      ease: "power2.out"
+    });
+
+    // Animate card content elements if they exist
+    const cardImage = card.querySelector('img');
+    const cardTitle = card.querySelector('h3, .project-title');
+    const cardDescription = card.querySelector('p, .project-description');
+    const cardTags = card.querySelectorAll('.tech-tag, .tag');
+    const cardLinks = card.querySelectorAll('a, .project-link');
+
+    // Image animation (NO FILTERS)
+    if (cardImage) {
+      gsap.set(cardImage, { scale: 1.1, autoAlpha: 0 });
+      tl.to(cardImage, {
+        duration: 1,
+        scale: 1,
+        autoAlpha: 1,
+        ease: "power2.out"
+      }, 0.2);
+    }
+
+    // Title animation
+    if (cardTitle) {
+      gsap.set(cardTitle, { y: 20, autoAlpha: 0 });
+      tl.to(cardTitle, {
+        duration: 0.8,
+        y: 0,
+        autoAlpha: 1,
+        ease: "power2.out"
+      }, 0.4);
+    }
+
+    // Description animation
+    if (cardDescription) {
+      gsap.set(cardDescription, { y: 15, autoAlpha: 0 });
+      tl.to(cardDescription, {
+        duration: 0.8,
+        y: 0,
+        autoAlpha: 1,
+        ease: "power2.out"
+      }, 0.6);
+    }
+
+    // Tags animation
+    if (cardTags.length) {
+      gsap.set(cardTags, { scale: 0.8, autoAlpha: 0 });
+      tl.to(cardTags, {
+        duration: 0.6,
+        scale: 1,
+        autoAlpha: 1,
+        stagger: 0.05,
+        ease: "back.out(1.7)"
+      }, 0.8);
+    }
+
+    // Links/buttons animation
+    if (cardLinks.length) {
+      gsap.set(cardLinks, { y: 15, autoAlpha: 0 });
+      tl.to(cardLinks, {
+        duration: 0.6,
+        y: 0,
+        autoAlpha: 1,
+        stagger: 0.1,
+        ease: "power2.out"
+      }, 1.0);
+    }
+  }
+
+  setupHoverEffects() {
+    this.projectCards.forEach(card => {
+      card.style.transition = 'none';
+      
+      if (!isMobile) {
+        this.setupDesktopHover(card);
+      } else {
+        this.setupMobileTouch(card);
+      }
+    });
+  }
+
+  setupDesktopHover(card) {
+    const image = card.querySelector('img');
+    
+    const hoverEnter = () => {
+      gsap.killTweensOf([card, image]);
+      
+      const tl = gsap.timeline();
+      
+      tl.to(card, {
+        duration: 0.4,
+        y: -12,
+        scale: 1.03,
+        ease: "power2.out"
+      });
+      
+      if (image) {
+        tl.to(image, {
+          duration: 0.5,
+          scale: 1.08,
+          ease: "power2.out"
+        }, 0);
+      }
+    };
+
+    const hoverLeave = () => {
+      gsap.killTweensOf([card, image]);
+      
+      const tl = gsap.timeline();
+      
+      tl.to(card, {
+        duration: 0.5,
+        y: 0,
+        scale: 1,
+        ease: "power2.out"
+      });
+      
+      if (image) {
+        tl.to(image, {
+          duration: 0.5,
+          scale: 1,
+          ease: "power2.out"
+        }, 0);
+      }
+    };
+
+    card.addEventListener('mouseenter', hoverEnter);
+    card.addEventListener('mouseleave', hoverLeave);
+  }
+
+  setupMobileTouch(card) {
+    const tapAnimation = () => {
+      gsap.killTweensOf(card);
+      
+      gsap.to(card, {
+        duration: 0.1,
+        scale: 0.98,
+        ease: "power2.out",
+        yoyo: true,
+        repeat: 1,
+        onComplete: () => {
+          gsap.to(card, {
+            duration: 0.3,
+            y: -4,
+            ease: "back.out(1.7)",
+            onComplete: () => {
+              gsap.to(card, {
+                duration: 0.4,
+                y: 0,
+                ease: "power2.out"
+              });
+            }
+          });
+        }
+      });
+    };
+
+    card.addEventListener('touchstart', tapAnimation);
+  }
+}
+
+// =========================
 // SCROLL ANIMATIONS FOR ALL SECTIONS
 // =========================
 class ScrollAnimations {
@@ -296,13 +519,12 @@ class ScrollAnimations {
   init() {
     this.animateAboutSection();
     this.animateSkillsSection();
-    this.animateProjectsSection();
     this.animateContactSection();
     this.animateFooterSection();
   }
 
   createScrollTrigger(section, elements, animationConfig) {
-    if (this.animatedSections.has(section)) return;
+    if (!section || this.animatedSections.has(section)) return;
     
     gsap.set(elements, animationConfig.initialState || {});
     
@@ -388,34 +610,6 @@ class ScrollAnimations {
           }
         }
       );
-    }
-  }
-
-  animateProjectsSection() {
-    const projectsSection = document.querySelector('#projects');
-    if (!projectsSection) return;
-    
-    const projectCards = Utils.selectElements('.project-card');
-    
-    if (projectCards.length) {
-      // Animate each card individually with a nice stagger effect
-      projectCards.forEach((card, index) => {
-        this.createScrollTrigger(
-          projectsSection,
-          card,
-          {
-            initialState: { y: 100, autoAlpha: 0, scale: 0.9 },
-            animateTo: {
-              duration: 0.8,
-              y: 0,
-              autoAlpha: 1,
-              scale: 1,
-              ease: "back.out(1.7)",
-              delay: index * 0.15 // Stagger effect
-            }
-          }
-        );
-      });
     }
   }
 
@@ -508,116 +702,6 @@ class ScrollAnimations {
 }
 
 // =========================
-// PROJECT ANIMATIONS
-// =========================
-class ProjectAnimations {
-  constructor() {
-    this.projectCards = Utils.selectElements('.project-card');
-    this.init();
-  }
-
-  init() {
-    if (!this.projectCards.length) return;
-    this.setupHoverEffects();
-  }
-
-  setupHoverEffects() {
-    this.projectCards.forEach(card => {
-      card.style.transition = 'none';
-      
-      if (!isMobile) {
-        this.setupDesktopHover(card);
-      } else {
-        this.setupMobileTouch(card);
-      }
-    });
-  }
-
-  setupDesktopHover(card) {
-    const image = card.querySelector('img');
-    
-    const hoverEnter = () => {
-      gsap.killTweensOf([card, image]);
-      
-      const tl = gsap.timeline();
-      
-      tl.to(card, {
-        duration: 0.4,
-        y: -12,
-        scale: 1.03,
-        boxShadow: "0 25px 50px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.2)",
-        ease: "power2.out"
-      });
-      
-      if (image) {
-        tl.to(image, {
-          duration: 0.5,
-          scale: 1.08,
-          ease: "power2.out"
-        }, 0);
-      }
-    };
-
-    const hoverLeave = () => {
-      gsap.killTweensOf([card, image]);
-      
-      const tl = gsap.timeline();
-      
-      tl.to(card, {
-        duration: 0.5,
-        y: 0,
-        scale: 1,
-        boxShadow: "0 15px 30px rgba(0, 0, 0, 0.1)",
-        ease: "power2.out"
-      });
-      
-      if (image) {
-        tl.to(image, {
-          duration: 0.5,
-          scale: 1,
-          ease: "power2.out"
-        }, 0);
-      }
-    };
-
-    card.addEventListener('mouseenter', hoverEnter);
-    card.addEventListener('mouseleave', hoverLeave);
-  }
-
-  setupMobileTouch(card) {
-    const tapAnimation = () => {
-      gsap.killTweensOf(card);
-      
-      gsap.to(card, {
-        duration: 0.1,
-        scale: 0.98,
-        ease: "power2.out",
-        yoyo: true,
-        repeat: 1,
-        onComplete: () => {
-          gsap.to(card, {
-            duration: 0.3,
-            y: -4,
-            boxShadow: "0 20px 40px rgba(0, 0, 0, 0.12)",
-            ease: "back.out(1.7)",
-            onComplete: () => {
-              gsap.to(card, {
-                duration: 0.4,
-                y: 0,
-                boxShadow: "0 15px 30px rgba(0, 0, 0, 0.1)",
-                ease: "power2.out"
-              });
-            }
-          });
-        }
-      });
-    };
-
-    card.addEventListener('touchstart', tapAnimation);
-  }
-}
-
-// =========================
 // NAVIGATION CONTROLLER
 // =========================
 class NavigationController {
@@ -650,45 +734,43 @@ class NavigationController {
     }
   }
 
- openNav() {
-  if (this.navLinks.classList.contains('open')) return;
-  
-  this.navLinks.classList.add('open');
-  gsap.set(this.navLinks, { display: 'flex' });
-  
-  gsap.to(this.navLinks, {
-    duration: 0.4,
-    y: 0,
-    autoAlpha: 1,
-    ease: "power2.out"
-  });
+  openNav() {
+    if (this.navLinks.classList.contains('open')) return;
 
-  // 🔥 Show cross icon
-  if (this.navClose) {
-    this.navClose.classList.add('show');
-  }
-}
+    this.navLinks.classList.add('open');
+    gsap.set(this.navLinks, { x: '100%', opacity: 0, display: 'flex' });
 
-closeNav() {
-  if (!this.navLinks.classList.contains('open')) return;
-  
-  gsap.to(this.navLinks, {
-    duration: 0.3,
-    y: -30,
-    autoAlpha: 0,
-    ease: "power2.out",
-    onComplete: () => {
-      this.navLinks.classList.remove('open');
-      gsap.set(this.navLinks, { display: 'none' });
+    gsap.to(this.navLinks, {
+      duration: 0.4,
+      x: '0%',
+      opacity: 1,
+      ease: "power2.out"
+    });
 
-      // 🔥 Hide cross icon
-      if (this.navClose) {
-        this.navClose.classList.remove('show');
-      }
+    // Show cross icon
+    if (this.navClose) {
+      this.navClose.classList.add('show');
     }
-  });
-}
+  }
 
+  closeNav() {
+    if (!this.navLinks.classList.contains('open')) return;
+
+    gsap.to(this.navLinks, {
+      duration: 0.3,
+      x: '100%',
+      opacity: 0,
+      ease: "power2.inOut",
+      onComplete: () => {
+        this.navLinks.classList.remove('open');
+        gsap.set(this.navLinks, { clearProps: 'all' });
+      }
+    });
+
+    if (this.navClose) {
+      this.navClose.classList.remove('show');
+    }
+  }
 }
 
 // =========================
@@ -790,8 +872,8 @@ class EmailController {
     });
 
     // Replace with your actual EmailJS service ID and template ID
-    const serviceId = "your_service_id";
-    const templateId = "your_template_id";
+    const serviceId = "priyanshikh16@gmail.com";
+    const templateId = "template_3o5i6w6";
     
     emailjs.sendForm(serviceId, templateId, form).then(
       () => {
@@ -827,66 +909,74 @@ class AnimationController {
   static initializeAll() {
     if (isInitialized) return;
     
-    // Update mobile detection
-    isMobile = Utils.detectMobile();
-    
-    // Set GSAP defaults
-    gsap.defaults({
-      ease: "power2.out",
-      duration: 0.8
-    });
-    
-    // Accessibility: reduce motion if preferred
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      gsap.globalTimeline.timeScale(0.3);
-    }
-    
-    // Initialize all animation classes
-    new CustomCursor(); // Initialize custom cursor first
-    new HeroAnimations();
-    new ScrollAnimations(); // Handles all scroll animations
-    new ProjectAnimations();
-    new NavigationController();
-    new ThemeController();
-    new EmailController();
-    
-    // Handle resize events
-    const debouncedResize = Utils.debounce(() => {
-      const newIsMobile = Utils.detectMobile();
-      if (newIsMobile !== isMobile) {
-        location.reload();
-      }
-      ScrollTrigger.refresh();
-    }, 300);
-    
-    window.addEventListener('resize', debouncedResize);
-    
-    // Smooth scrolling for navigation
-    const navLinks = document.querySelectorAll('a[href^="#"]');
-    navLinks.forEach(link => {
-      link.addEventListener('click', (e) => {
-        e.preventDefault();
-        const targetId = link.getAttribute('href');
-        const targetElement = document.querySelector(targetId);
-        
-        if (targetElement) {
-          targetElement.scrollIntoView({
-            behavior: 'smooth',
-            block: 'start'
-          });
-        }
+    try {
+      // Update mobile detection
+      isMobile = Utils.detectMobile();
+      
+      // Set GSAP defaults
+      gsap.defaults({
+        ease: "power2.out",
+        duration: 0.8
       });
-    });
-    
-    // Mobile viewport height fix
-    const setVH = () => {
-      const vh = window.innerHeight * 0.01;
-      document.documentElement.style.setProperty('--vh', `${vh}px`);
-    };
-    setVH();
-    window.addEventListener('resize', setVH);
-    
-    isInitialized = true;
+      
+      // Accessibility: reduce motion if preferred
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        gsap.globalTimeline.timeScale(0.3);
+      }
+      
+      // Initialize all animation classes
+      new CustomCursor();
+      new HeroAnimations();
+      new ScrollAnimations();
+      new ProjectCardAnimations(); // Clean project animations
+      new NavigationController();
+      new ThemeController();
+      new EmailController();
+      
+      // Handle resize events
+      const debouncedResize = Utils.debounce(() => {
+        const newIsMobile = Utils.detectMobile();
+        if (newIsMobile !== isMobile) {
+          location.reload();
+        }
+        ScrollTrigger.refresh();
+      }, 300);
+      
+      window.addEventListener('resize', debouncedResize);
+      
+      // Smooth scrolling for navigation
+      const navLinks = document.querySelectorAll('a[href^="#"]');
+      navLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+          const targetId = link.getAttribute('href');
+          const targetElement = document.querySelector(targetId);
+          
+          if (targetElement) {
+            targetElement.scrollIntoView({
+              behavior: 'smooth',
+              block: 'start'
+            });
+          }
+        });
+      });
+      
+      // Mobile viewport height fix
+      const setVH = () => {
+        const vh = window.innerHeight * 0.01;
+        document.documentElement.style.setProperty('--vh', `${vh}px`);
+      };
+      setVH();
+      window.addEventListener('resize', setVH);
+      
+      isInitialized = true;
+      console.log('✅ Portfolio animations initialized successfully!');
+      
+    } catch (error) {
+      console.error('❌ Animation initialization error:', error);
+      // Fallback: ensure basic functionality works
+      isInitialized = true;
+    }
   }
 }
 
