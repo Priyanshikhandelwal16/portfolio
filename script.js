@@ -65,14 +65,12 @@ class CustomCursor {
   moveCursor(e) {
     if (!this.cursor || !this.cursorOutline) return;
     
-    this.cursor.style.left = e.clientX + 'px';
-    this.cursor.style.top = e.clientY + 'px';
+    this.cursor.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
     
     // Add a slight delay to the outline for a smooth trailing effect
-    setTimeout(() => {
-      this.cursorOutline.style.left = e.clientX + 'px';
-      this.cursorOutline.style.top = e.clientY + 'px';
-    }, 80);
+    requestAnimationFrame(() => {
+      this.cursorOutline.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
+    });
   }
 
   setupHoverEffects() {
@@ -310,7 +308,7 @@ class ScrollAnimations {
     
     ScrollTrigger.create({
       trigger: section,
-      start: "top 80%",
+      start: "top 85%",
       once: true,
       onEnter: () => {
         if (this.animatedSections.has(section)) return;
@@ -321,9 +319,6 @@ class ScrollAnimations {
             this.animatedSections.add(section);
           }
         });
-      },
-      onLeaveBack: () => {
-        this.animatedSections.delete(section);
       }
     });
   }
@@ -342,10 +337,10 @@ class ScrollAnimations {
         {
           initialState: { y: 60, autoAlpha: 0 },
           animateTo: {
-            duration: 1,
+            duration: 1.2,
             y: 0,
             autoAlpha: 1,
-            stagger: 0.2,
+            stagger: 0.3,
             ease: "power2.out"
           }
         }
@@ -357,21 +352,39 @@ class ScrollAnimations {
     const skillsSection = document.querySelector('.skills-section, #skills');
     if (!skillsSection) return;
     
+    const skillCategories = Utils.selectElements('.skill-category');
     const skills = Utils.selectElements('.skill, .tech-tag');
+    
+    if (skillCategories.length) {
+      this.createScrollTrigger(
+        skillsSection,
+        skillCategories,
+        {
+          initialState: { y: 80, autoAlpha: 0 },
+          animateTo: {
+            duration: 1,
+            y: 0,
+            autoAlpha: 1,
+            stagger: 0.2,
+            ease: "power2.out"
+          }
+        }
+      );
+    }
     
     if (skills.length) {
       this.createScrollTrigger(
         skillsSection,
         skills,
         {
-          initialState: { scale: 0.5, autoAlpha: 0, rotationY: -180 },
+          initialState: { scale: 0.5, autoAlpha: 0 },
           animateTo: {
             duration: 0.6,
             scale: 1,
             autoAlpha: 1,
-            rotationY: 0,
             stagger: 0.05,
-            ease: "back.out(1.7)"
+            ease: "back.out(1.7)",
+            delay: 0.3
           }
         }
       );
@@ -385,21 +398,24 @@ class ScrollAnimations {
     const projectCards = Utils.selectElements('.project-card');
     
     if (projectCards.length) {
-      this.createScrollTrigger(
-        projectsSection,
-        projectCards,
-        {
-          initialState: { y: 80, autoAlpha: 0, scale: 0.95 },
-          animateTo: {
-            duration: 0.8,
-            y: 0,
-            autoAlpha: 1,
-            scale: 1,
-            stagger: 0.15,
-            ease: "power2.out"
+      // Animate each card individually with a nice stagger effect
+      projectCards.forEach((card, index) => {
+        this.createScrollTrigger(
+          projectsSection,
+          card,
+          {
+            initialState: { y: 100, autoAlpha: 0, scale: 0.9 },
+            animateTo: {
+              duration: 0.8,
+              y: 0,
+              autoAlpha: 1,
+              scale: 1,
+              ease: "back.out(1.7)",
+              delay: index * 0.15 // Stagger effect
+            }
           }
-        }
-      );
+        );
+      });
     }
   }
 
@@ -407,20 +423,40 @@ class ScrollAnimations {
     const contactSection = document.querySelector('#Contact, #contact');
     if (!contactSection) return;
     
-    const contactElements = Utils.selectElements('.contact-info, .contact-form, .info-box');
+    const contactInfo = document.querySelector('.contact-info');
+    const contactForm = document.querySelector('.contact-form');
+    const infoBoxes = Utils.selectElements('.info-box');
     
-    if (contactElements.length) {
+    if (contactInfo && contactForm) {
       this.createScrollTrigger(
         contactSection,
-        contactElements,
+        [contactInfo, contactForm],
         {
-          initialState: { y: 50, autoAlpha: 0 },
+          initialState: { y: 60, autoAlpha: 0 },
+          animateTo: {
+            duration: 1,
+            y: 0,
+            autoAlpha: 1,
+            stagger: 0.2,
+            ease: "power2.out"
+          }
+        }
+      );
+    }
+    
+    if (infoBoxes.length) {
+      this.createScrollTrigger(
+        contactSection,
+        infoBoxes,
+        {
+          initialState: { y: 40, autoAlpha: 0 },
           animateTo: {
             duration: 0.8,
             y: 0,
             autoAlpha: 1,
-            stagger: 0.15,
-            ease: "power2.out"
+            stagger: 0.1,
+            ease: "power2.out",
+            delay: 0.3
           }
         }
       );
@@ -614,34 +650,45 @@ class NavigationController {
     }
   }
 
-  openNav() {
-    if (this.navLinks.classList.contains('open')) return;
-    
-    this.navLinks.classList.add('open');
-    gsap.set(this.navLinks, { display: 'flex' });
-    
-    gsap.to(this.navLinks, {
-      duration: 0.4,
-      y: 0,
-      autoAlpha: 1,
-      ease: "power2.out"
-    });
-  }
+ openNav() {
+  if (this.navLinks.classList.contains('open')) return;
+  
+  this.navLinks.classList.add('open');
+  gsap.set(this.navLinks, { display: 'flex' });
+  
+  gsap.to(this.navLinks, {
+    duration: 0.4,
+    y: 0,
+    autoAlpha: 1,
+    ease: "power2.out"
+  });
 
-  closeNav() {
-    if (!this.navLinks.classList.contains('open')) return;
-    
-    gsap.to(this.navLinks, {
-      duration: 0.3,
-      y: -30,
-      autoAlpha: 0,
-      ease: "power2.out",
-      onComplete: () => {
-        this.navLinks.classList.remove('open');
-        gsap.set(this.navLinks, { display: 'none' });
-      }
-    });
+  // 🔥 Show cross icon
+  if (this.navClose) {
+    this.navClose.classList.add('show');
   }
+}
+
+closeNav() {
+  if (!this.navLinks.classList.contains('open')) return;
+  
+  gsap.to(this.navLinks, {
+    duration: 0.3,
+    y: -30,
+    autoAlpha: 0,
+    ease: "power2.out",
+    onComplete: () => {
+      this.navLinks.classList.remove('open');
+      gsap.set(this.navLinks, { display: 'none' });
+
+      // 🔥 Hide cross icon
+      if (this.navClose) {
+        this.navClose.classList.remove('show');
+      }
+    }
+  });
+}
+
 }
 
 // =========================
