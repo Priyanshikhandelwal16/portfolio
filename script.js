@@ -5,6 +5,7 @@
 // Global state
 let isInitialized = false;
 let isMobile = window.innerWidth <= 768;
+let reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 // =========================
 // UTILITY FUNCTIONS
@@ -34,11 +35,23 @@ const Utils = {
   // Check if element exists
   elementExists(selector) {
     return document.querySelector(selector) !== null;
+  },
+  
+  // Mobile performance optimization
+  isLowPerformanceDevice() {
+    // Check for low memory devices or older devices
+    const userAgent = navigator.userAgent;
+    return (
+      /Android [2-4]/.test(userAgent) ||
+      /iPhone OS [0-9_]/.test(userAgent) ||
+      navigator.deviceMemory < 4 ||
+      navigator.hardwareConcurrency < 4
+    );
   }
 };
 
 // =========================
-// CUSTOM CURSOR
+// PERFORMANCE OPTIMIZED CUSTOM CURSOR
 // =========================
 class CustomCursor {
   constructor() {
@@ -48,15 +61,21 @@ class CustomCursor {
   }
 
   init() {
-    if (!this.cursor || !this.cursorOutline || isMobile) {
-      // Hide custom cursor on mobile or if elements don't exist
+    // Disable completely on mobile or if user prefers reduced motion
+    if (!this.cursor || !this.cursorOutline || isMobile || reduceMotion) {
       if (this.cursor) this.cursor.style.display = 'none';
       if (this.cursorOutline) this.cursorOutline.style.display = 'none';
       return;
     }
 
+    // Throttle mousemove events for performance
+    let lastMove = 0;
     document.addEventListener('mousemove', (e) => {
-      this.moveCursor(e);
+      const now = Date.now();
+      if (now - lastMove > 16) { // ~60fps
+        this.moveCursor(e);
+        lastMove = now;
+      }
     });
 
     this.setupHoverEffects();
@@ -65,11 +84,12 @@ class CustomCursor {
   moveCursor(e) {
     if (!this.cursor || !this.cursorOutline) return;
     
-    this.cursor.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
+    // Use transform3d for hardware acceleration
+    this.cursor.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0)`;
     
-    // Add a slight delay to the outline for a smooth trailing effect
+    // Use RAF for smooth animation
     requestAnimationFrame(() => {
-      this.cursorOutline.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
+      this.cursorOutline.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0)`;
     });
   }
 
@@ -100,7 +120,7 @@ class CustomCursor {
 }
 
 // =========================
-// PAGE LOADER
+// OPTIMIZED PAGE LOADER
 // =========================
 class PageLoader {
   constructor() {
@@ -122,6 +142,12 @@ class PageLoader {
   }
 
   animateLoader() {
+    // Skip or simplify loader animation on mobile/low performance devices
+    if (isMobile || Utils.isLowPerformanceDevice()) {
+      this.hideLoader();
+      return;
+    }
+
     const loaderText = this.loader.querySelector('p');
     const spinner = this.loader.querySelector('.spinner');
     
@@ -129,7 +155,7 @@ class PageLoader {
     
     gsap.to(counter, {
       value: 100,
-      duration: 2,
+      duration: reduceMotion ? 0.5 : 2,
       ease: "power2.out",
       onUpdate: () => {
         if (loaderText) {
@@ -151,7 +177,7 @@ class PageLoader {
 
   hideLoader() {
     gsap.to(this.loader, {
-      duration: 0.5,
+      duration: reduceMotion ? 0.2 : 0.5,
       autoAlpha: 0,
       y: -50,
       ease: "power2.inOut",
@@ -165,7 +191,7 @@ class PageLoader {
   showMainContent() {
     if (this.main) {
       gsap.to(this.main, {
-        duration: 0.8,
+        duration: reduceMotion ? 0.3 : 0.8,
         autoAlpha: 1,
         ease: "power2.out",
         onComplete: () => {
@@ -180,7 +206,7 @@ class PageLoader {
 }
 
 // =========================
-// HERO ANIMATIONS
+// OPTIMIZED HERO ANIMATIONS
 // =========================
 class HeroAnimations {
   constructor() {
@@ -218,7 +244,7 @@ class HeroAnimations {
   }
 
   prepareTextAnimation() {
-    if (!this.heroText) return;
+    if (!this.heroText || isMobile) return; // Skip complex text animation on mobile
     
     const text = this.heroText.textContent;
     const words = text.split(' ');
@@ -234,47 +260,62 @@ class HeroAnimations {
   }
 
   createTimeline() {
-    // Wait before starting hero animation
-    const tl = gsap.timeline({ delay: 1.2 });
+    // Adjust timing based on device
+    const delay = reduceMotion ? 0.2 : (isMobile ? 0.5 : 1.2);
+    const durationMultiplier = reduceMotion ? 0.5 : (isMobile ? 0.7 : 1);
+    
+    const tl = gsap.timeline({ delay });
 
     // Hero left
     if (this.heroLeft) {
       tl.to(this.heroLeft, {
-        duration: 1.2,
+        duration: 1.2 * durationMultiplier,
         x: 0,
         autoAlpha: 1,
         ease: "power2.out"
       }, 0);
     }
 
-    // Text animation
-    const wordSpans = this.heroText?.querySelectorAll('.word');
-    if (wordSpans?.length) {
-      tl.to(wordSpans, {
-        duration: 0.8,
-        y: 0,
-        autoAlpha: 1,
-        rotationX: 0,
-        stagger: 0.12,
-        ease: "back.out(1.7)"
-      }, 0.5);
+    // Text animation - simplified on mobile
+    if (this.heroText) {
+      if (isMobile) {
+        // Simple fade-in for mobile
+        tl.to(this.heroText, {
+          duration: 0.8 * durationMultiplier,
+          autoAlpha: 1,
+          ease: "power2.out"
+        }, 0.3);
+      } else {
+        // Full animation for desktop
+        const wordSpans = this.heroText.querySelectorAll('.word');
+        if (wordSpans?.length) {
+          tl.to(wordSpans, {
+            duration: 0.8 * durationMultiplier,
+            y: 0,
+            autoAlpha: 1,
+            rotationX: 0,
+            stagger: reduceMotion ? 0 : 0.12,
+            ease: "back.out(1.7)"
+          }, 0.5);
+        }
+      }
     }
 
     // Hero buttons
     if (this.heroButtons.length) {
       tl.to(this.heroButtons, {
-        duration: 0.8,
+        duration: 0.8 * durationMultiplier,
         y: 0,
         autoAlpha: 1,
-        stagger: 0.15,
+        stagger: reduceMotion ? 0 : 0.15,
         ease: "back.out(1.7)"
-      }, 1.0);
+      }, 1.0 * durationMultiplier);
     }
 
     // Hero right
     if (this.heroRight) {
       tl.to(this.heroRight, {
-        duration: 1.2,
+        duration: 1.2 * durationMultiplier,
         x: 0,
         autoAlpha: 1,
         scale: 1,
@@ -285,7 +326,7 @@ class HeroAnimations {
 }
 
 // =========================
-// ENHANCED PROJECT CARD ANIMATIONS (COLOR-SAFE)
+// PERFORMANCE-OPTIMIZED PROJECT CARD ANIMATIONS
 // =========================
 class ProjectCardAnimations {
   constructor() {
@@ -303,12 +344,16 @@ class ProjectCardAnimations {
   }
 
   setupInitialStates() {
-    // Set initial state for all project cards (NO COLOR CHANGES)
+    // Set initial state for all project cards
     this.projectCards.forEach(card => {
+      // Less dramatic initial state on mobile
+      const yOffset = isMobile ? 40 : 80;
+      const scale = isMobile ? 0.95 : 0.9;
+      
       gsap.set(card, {
-        y: 80,
+        y: yOffset,
         autoAlpha: 0,
-        scale: 0.9,
+        scale: scale,
         transformOrigin: "center center"
       });
     });
@@ -319,15 +364,17 @@ class ProjectCardAnimations {
       // Create individual scroll trigger for each card
       ScrollTrigger.create({
         trigger: card,
-        start: "top 85%",
+        start: isMobile ? "top 90%" : "top 85%", // Trigger earlier on mobile
         once: true,
         onEnter: () => {
           if (this.animatedCards.has(index)) return;
           
-          // Delay each card by 200ms
+          // Shorter delay on mobile
+          const delay = isMobile ? index * 100 : index * 200;
+          
           setTimeout(() => {
             this.animateCardIn(card, index);
-          }, index * 200);
+          }, delay);
         }
       });
     });
@@ -338,17 +385,24 @@ class ProjectCardAnimations {
     
     this.animatedCards.add(index);
     
-    // Simple, smooth entrance animation (NO COLOR CHANGES)
+    // Use shorter durations on mobile
+    const durationMultiplier = isMobile ? 0.7 : 1;
+    
     const tl = gsap.timeline();
     
     // Main card animation
     tl.to(card, {
-      duration: 1,
+      duration: 1 * durationMultiplier,
       y: 0,
       autoAlpha: 1,
       scale: 1,
       ease: "power2.out"
     });
+
+    // Skip some animations on mobile for performance
+    if (isMobile && Utils.isLowPerformanceDevice()) {
+      return; // Just show the card, no inner animations
+    }
 
     // Animate card content elements if they exist
     const cardImage = card.querySelector('img');
@@ -357,11 +411,11 @@ class ProjectCardAnimations {
     const cardTags = card.querySelectorAll('.tech-tag, .tag');
     const cardLinks = card.querySelectorAll('a, .project-link');
 
-    // Image animation (NO FILTERS)
+    // Image animation
     if (cardImage) {
       gsap.set(cardImage, { scale: 1.1, autoAlpha: 0 });
       tl.to(cardImage, {
-        duration: 1,
+        duration: 1 * durationMultiplier,
         scale: 1,
         autoAlpha: 1,
         ease: "power2.out"
@@ -372,32 +426,32 @@ class ProjectCardAnimations {
     if (cardTitle) {
       gsap.set(cardTitle, { y: 20, autoAlpha: 0 });
       tl.to(cardTitle, {
-        duration: 0.8,
+        duration: 0.8 * durationMultiplier,
         y: 0,
         autoAlpha: 1,
         ease: "power2.out"
       }, 0.4);
     }
 
-    // Description animation
-    if (cardDescription) {
+    // Description animation - skip on mobile if low performance
+    if (cardDescription && !(isMobile && Utils.isLowPerformanceDevice())) {
       gsap.set(cardDescription, { y: 15, autoAlpha: 0 });
       tl.to(cardDescription, {
-        duration: 0.8,
+        duration: 0.8 * durationMultiplier,
         y: 0,
         autoAlpha: 1,
         ease: "power2.out"
       }, 0.6);
     }
 
-    // Tags animation
+    // Tags animation - skip stagger on mobile
     if (cardTags.length) {
       gsap.set(cardTags, { scale: 0.8, autoAlpha: 0 });
       tl.to(cardTags, {
-        duration: 0.6,
+        duration: 0.6 * durationMultiplier,
         scale: 1,
         autoAlpha: 1,
-        stagger: 0.05,
+        stagger: isMobile ? 0 : 0.05,
         ease: "back.out(1.7)"
       }, 0.8);
     }
@@ -406,24 +460,22 @@ class ProjectCardAnimations {
     if (cardLinks.length) {
       gsap.set(cardLinks, { y: 15, autoAlpha: 0 });
       tl.to(cardLinks, {
-        duration: 0.6,
+        duration: 0.6 * durationMultiplier,
         y: 0,
         autoAlpha: 1,
-        stagger: 0.1,
+        stagger: isMobile ? 0 : 0.1,
         ease: "power2.out"
       }, 1.0);
     }
   }
 
   setupHoverEffects() {
+    // Skip hover effects on mobile
+    if (isMobile) return;
+    
     this.projectCards.forEach(card => {
       card.style.transition = 'none';
-      
-      if (!isMobile) {
-        this.setupDesktopHover(card);
-      } else {
-        this.setupMobileTouch(card);
-      }
+      this.setupDesktopHover(card);
     });
   }
 
@@ -475,40 +527,10 @@ class ProjectCardAnimations {
     card.addEventListener('mouseenter', hoverEnter);
     card.addEventListener('mouseleave', hoverLeave);
   }
-
-  setupMobileTouch(card) {
-    const tapAnimation = () => {
-      gsap.killTweensOf(card);
-      
-      gsap.to(card, {
-        duration: 0.1,
-        scale: 0.98,
-        ease: "power2.out",
-        yoyo: true,
-        repeat: 1,
-        onComplete: () => {
-          gsap.to(card, {
-            duration: 0.3,
-            y: -4,
-            ease: "back.out(1.7)",
-            onComplete: () => {
-              gsap.to(card, {
-                duration: 0.4,
-                y: 0,
-                ease: "power2.out"
-              });
-            }
-          });
-        }
-      });
-    };
-
-    card.addEventListener('touchstart', tapAnimation);
-  }
 }
 
 // =========================
-// SCROLL ANIMATIONS FOR ALL SECTIONS
+// OPTIMIZED SCROLL ANIMATIONS FOR ALL SECTIONS
 // =========================
 class ScrollAnimations {
   constructor() {
@@ -517,10 +539,39 @@ class ScrollAnimations {
   }
 
   init() {
+    // Use simpler animations on mobile
+    if (isMobile) {
+      this.setupMobileAnimations();
+    } else {
+      this.setupDesktopAnimations();
+    }
+  }
+
+  setupDesktopAnimations() {
     this.animateAboutSection();
     this.animateSkillsSection();
     this.animateContactSection();
     this.animateFooterSection();
+  }
+
+  setupMobileAnimations() {
+    // Simplified animations for mobile
+    const sections = document.querySelectorAll('section');
+    sections.forEach(section => {
+      ScrollTrigger.create({
+        trigger: section,
+        start: "top 90%",
+        once: true,
+        onEnter: () => {
+          gsap.to(section, {
+            duration: 0.6,
+            autoAlpha: 1,
+            y: 0,
+            ease: "power2.out"
+          });
+        }
+      });
+    });
   }
 
   createScrollTrigger(section, elements, animationConfig) {
@@ -559,10 +610,10 @@ class ScrollAnimations {
         {
           initialState: { y: 60, autoAlpha: 0 },
           animateTo: {
-            duration: 1.2,
+            duration: reduceMotion ? 0.5 : 1.2,
             y: 0,
             autoAlpha: 1,
-            stagger: 0.3,
+            stagger: reduceMotion ? 0 : 0.3,
             ease: "power2.out"
           }
         }
@@ -584,10 +635,10 @@ class ScrollAnimations {
         {
           initialState: { y: 80, autoAlpha: 0 },
           animateTo: {
-            duration: 1,
+            duration: reduceMotion ? 0.5 : 1,
             y: 0,
             autoAlpha: 1,
-            stagger: 0.2,
+            stagger: reduceMotion ? 0 : 0.2,
             ease: "power2.out"
           }
         }
@@ -601,12 +652,12 @@ class ScrollAnimations {
         {
           initialState: { scale: 0.5, autoAlpha: 0 },
           animateTo: {
-            duration: 0.6,
+            duration: reduceMotion ? 0.3 : 0.6,
             scale: 1,
             autoAlpha: 1,
-            stagger: 0.05,
+            stagger: reduceMotion ? 0 : 0.05,
             ease: "back.out(1.7)",
-            delay: 0.3
+            delay: reduceMotion ? 0 : 0.3
           }
         }
       );
@@ -628,10 +679,10 @@ class ScrollAnimations {
         {
           initialState: { y: 60, autoAlpha: 0 },
           animateTo: {
-            duration: 1,
+            duration: reduceMotion ? 0.5 : 1,
             y: 0,
             autoAlpha: 1,
-            stagger: 0.2,
+            stagger: reduceMotion ? 0 : 0.2,
             ease: "power2.out"
           }
         }
@@ -645,12 +696,12 @@ class ScrollAnimations {
         {
           initialState: { y: 40, autoAlpha: 0 },
           animateTo: {
-            duration: 0.8,
+            duration: reduceMotion ? 0.4 : 0.8,
             y: 0,
             autoAlpha: 1,
-            stagger: 0.1,
+            stagger: reduceMotion ? 0 : 0.1,
             ease: "power2.out",
-            delay: 0.3
+            delay: reduceMotion ? 0 : 0.3
           }
         }
       );
@@ -671,10 +722,10 @@ class ScrollAnimations {
         {
           initialState: { y: 40, autoAlpha: 0 },
           animateTo: {
-            duration: 0.8,
+            duration: reduceMotion ? 0.4 : 0.8,
             y: 0,
             autoAlpha: 1,
-            stagger: 0.1,
+            stagger: reduceMotion ? 0 : 0.1,
             ease: "power2.out"
           }
         }
@@ -688,12 +739,12 @@ class ScrollAnimations {
         {
           initialState: { scale: 0.3, autoAlpha: 0 },
           animateTo: {
-            duration: 0.6,
+            duration: reduceMotion ? 0.3 : 0.6,
             scale: 1,
             autoAlpha: 1,
-            stagger: 0.1,
+            stagger: reduceMotion ? 0 : 0.1,
             ease: "back.out(1.7)",
-            delay: 0.5
+            delay: reduceMotion ? 0 : 0.5
           }
         }
       );
@@ -702,7 +753,7 @@ class ScrollAnimations {
 }
 
 // =========================
-// NAVIGATION CONTROLLER
+// NAVIGATION CONTROLLER (unchanged)
 // =========================
 class NavigationController {
   constructor() {
@@ -782,10 +833,8 @@ class NavigationController {
   }
 }
 
-   
-
 // =========================
-// THEME TOGGLE
+// THEME TOGGLE (unchanged)
 // =========================
 class ThemeController {
   constructor() {
@@ -854,7 +903,7 @@ class ThemeController {
 }
 
 // =========================
-// EMAIL FUNCTIONALITY
+// EMAIL FUNCTIONALITY (unchanged)
 // =========================
 class EmailController {
   constructor() {
@@ -914,7 +963,7 @@ class EmailController {
 }
 
 // =========================
-// MAIN ANIMATION CONTROLLER
+// MAIN ANIMATION CONTROLLER WITH PERFORMANCE OPTIMIZATIONS
 // =========================
 class AnimationController {
   static initializeAll() {
@@ -923,23 +972,24 @@ class AnimationController {
     try {
       // Update mobile detection
       isMobile = Utils.detectMobile();
+      reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       
-      // Set GSAP defaults
+      // Set GSAP defaults based on device
       gsap.defaults({
         ease: "power2.out",
-        duration: 0.8
+        duration: isMobile ? 0.6 : 0.8
       });
       
       // Accessibility: reduce motion if preferred
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-        gsap.globalTimeline.timeScale(0.3);
+      if (reduceMotion) {
+        gsap.globalTimeline.timeScale(0.5);
       }
       
       // Initialize all animation classes
       new CustomCursor();
       new HeroAnimations();
       new ScrollAnimations();
-      new ProjectCardAnimations(); // Clean project animations
+      new ProjectCardAnimations();
       new NavigationController();
       new ThemeController();
       new EmailController();
@@ -947,7 +997,9 @@ class AnimationController {
       // Handle resize events
       const debouncedResize = Utils.debounce(() => {
         const newIsMobile = Utils.detectMobile();
-        if (newIsMobile !== isMobile) {
+        const newReduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        
+        if (newIsMobile !== isMobile || newReduceMotion !== reduceMotion) {
           location.reload();
         }
         ScrollTrigger.refresh();
@@ -1020,7 +1072,6 @@ document.addEventListener('DOMContentLoaded', () => {
   checkGSAP();
 });
 
-// Fallback initialization
 // Fallback initialization
 window.addEventListener('load', () => {
   setTimeout(() => {
