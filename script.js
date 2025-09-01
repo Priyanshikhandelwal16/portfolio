@@ -718,7 +718,7 @@ class NavigationController {
     if (isMobile) {
       gsap.set(this.navLinks, { y: -30, autoAlpha: 0, display: 'none' });
       
-      this.hamburger.addEventListener('click', () => this.openNav());
+      this.hamburger.addEventListener('click', () => this.toggleNav());
       
       if (this.navClose) {
         this.navClose.addEventListener('click', () => this.closeNav());
@@ -734,16 +734,24 @@ class NavigationController {
     }
   }
 
+  toggleNav() {
+    if (this.navLinks.classList.contains('open')) {
+      this.closeNav();
+    } else {
+      this.openNav();
+    }
+  }
+
   openNav() {
     if (this.navLinks.classList.contains('open')) return;
 
     this.navLinks.classList.add('open');
-    gsap.set(this.navLinks, { x: '100%', opacity: 0, display: 'flex' });
+    gsap.set(this.navLinks, { display: 'flex' });
 
     gsap.to(this.navLinks, {
       duration: 0.4,
-      x: '0%',
-      opacity: 1,
+      y: 0,
+      autoAlpha: 1,
       ease: "power2.out"
     });
 
@@ -758,20 +766,23 @@ class NavigationController {
 
     gsap.to(this.navLinks, {
       duration: 0.3,
-      x: '100%',
-      opacity: 0,
+      y: -30,
+      autoAlpha: 0,
       ease: "power2.inOut",
       onComplete: () => {
         this.navLinks.classList.remove('open');
-        gsap.set(this.navLinks, { clearProps: 'all' });
+        gsap.set(this.navLinks, { display: 'none' });
       }
     });
 
+    // Hide cross icon
     if (this.navClose) {
       this.navClose.classList.remove('show');
     }
   }
 }
+
+   
 
 // =========================
 // THEME TOGGLE
@@ -1010,21 +1021,23 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // Fallback initialization
+// Fallback initialization
 window.addEventListener('load', () => {
   setTimeout(() => {
     if (!isInitialized) {
       // If GSAP is not available, still initialize basic functionality
       if (typeof gsap === 'undefined') {
-        console.warn('GSAP not loaded, initializing basic functionality');
+        console.warn('⚠️ GSAP not loaded, initializing basic functionality only');
+        
+        // Basic features without animations
         new CustomCursor();
         new NavigationController();
         new ThemeController();
         new EmailController();
-        isInitialized = true;
-      } else if (typeof ScrollTrigger !== 'undefined') {
-        gsap.registerPlugin(ScrollTrigger);
+      } else {
+        // If GSAP exists but init didn't fire, force init
         AnimationController.initializeAll();
       }
     }
-  }, 1000);
+  }, 1500);
 });

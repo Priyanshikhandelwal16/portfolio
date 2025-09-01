@@ -1,3 +1,16 @@
+    @-webkit-viewport { width: device-width; }
+@-moz-viewport { width: device-width; }
+@-ms-viewport { width: device-width; }
+@-o-viewport { width: device-width; }
+@viewport { width: device-width; }
+
+html {
+    text-size-adjust: 100%;
+    -webkit-text-size-adjust: 100%;
+    -moz-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+}
+    
     * {
         margin: 0;
         padding: 0;
@@ -51,6 +64,10 @@
         overflow-x: hidden;
         background: var(--bg-main);
     }
+
+    #hero-content, .about-content, .projects-container {
+    contain: layout style paint;
+}
 
     img {
         max-width: 100%;
@@ -211,6 +228,7 @@
 
     #nav-links li:hover {
         color: var(--accent-secondary);
+         transform: translateY(-2px);
     }
 
     #nav-links li a {
@@ -235,26 +253,28 @@
         gap: 1rem;
     }
 
-    .resume-btn {
-        text-decoration: none;
-        color: #fff;
-        background-color: var(--accent-primary);
-        padding: 10px 16px;
-        border-radius: 10px;
-        transition: all 0.3s ease;
-        font-weight: 500;
-        font-size: 1rem;
-        margin-left: 0.5rem;
-        border: none;
-        display: inline-block;
-        text-align: center;
-        white-space: nowrap;
-    }
+ .resume-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px; /* text aur icon ke beech spacing */
+  background: #162527; /* tumhare theme ka color use kar sakti ho */
+  color: #fff;
+  padding: 10px 16px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
 
-    .resume-btn:hover {
-        background-color: var(--accent-secondary);
-        color: var(--text-primary);
-    }
+.resume-btn i {
+  font-size: 1.2rem; /* icon size */
+}
+
+.resume-btn:hover {
+  background: var(--accent-secondary); /* hover effect */
+  transform: translateY(-2px);
+  color: var(--text-primary);
+}
 
     #theme-toggle {
         background: transparent;
@@ -271,62 +291,63 @@
     }
 
     #hamburger {
-        display: none;
-        flex-direction: column;
-        gap: 5px;
-        cursor: pointer;
-        margin-left: 1rem;
-        z-index: 1002;
-        position: relative;
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      margin-left: 1rem;
+      z-index: 1002;
+      position: relative;
     }
 
     #hamburger span {
-        width: 27px;
-        height: 3px;
-        background: var(--text-primary);
-        border-radius: 3px;
-        transition: all 0.3s ease;
-        display: block;
-        transform-origin: center;
+      width: 27px;
+      height: 3px;
+      background: var(--text-primary, #333);
+      border-radius: 3px;
+      transition: all 0.3s ease;
+      display: block;
+      transform-origin: center;
     }
 
     /* Hamburger to Cross Animation */
     #hamburger.active span:nth-child(1) {
-        transform: rotate(45deg) translate(6px, 6px);
+      transform: rotate(45deg) translate(6px, 6px);
     }
 
     #hamburger.active span:nth-child(2) {
-        opacity: 0;
-        transform: translateX(-20px);
+      opacity: 0;
+      transform: translateX(-20px);
     }
 
     #hamburger.active span:nth-child(3) {
-        transform: rotate(-45deg) translate(6px, -6px);
+      transform: rotate(-45deg) translate(6px, -6px);
     }
 
     /* Cross Icon - Hidden by default, shown when menu is open */
     #nav-close {
-        display: none;
-        position: fixed;
-        top: 28px;
-        right: 28px;
-        z-index: 2002;
-        font-size: 2.2rem;
-        color: var(--text-primary);
-        background: none;
-        border: none;
-        cursor: pointer;
-        transition: all 0.3s;
-        user-select: none;
-        opacity: 0;
-        pointer-events: none;
+      display: none;
+      position: fixed;
+      top: 28px;
+      right: 28px;
+      z-index: 2002;
+      font-size: 2.2rem;
+      color: var(--text-primary, #333);
+      background: none;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s;
+      user-select: none;
+      opacity: 0;
+      pointer-events: none;
     }
 
     #nav-close.show {
-        display: block;
-        opacity: 1;
-        pointer-events: all;
+      display: block;
+      opacity: 1;
+      pointer-events: all;
     }
+
 
     /* ===== Hero Section ===== */
     #hero {
@@ -362,7 +383,8 @@
     }
 
     .hero-title {
-        font-size: clamp(2rem, 3vw + 0.5rem, 3.2rem); 
+        font-size: clamp(2.2rem, 5vw, 3.5rem); /* More conservative sizing */
+    line-height: 1.2;
         font-weight: 800;
         color: var(--text-primary);
         text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
@@ -388,11 +410,11 @@
     }
 
     #hero-subtitle {
-         font-size: clamp(0.9rem, 1.2vw + 0.5rem, 1.2rem); 
-        color: var(--text-secondary);
-        margin-bottom: 2.5rem;
-        font-weight: 500;
-        line-height: 1.6;
+         font-size: clamp(1rem, 1.8vw, 1.4rem);
+    line-height: 1.6;
+    max-width: 90%;
+    margin-left: auto;
+    margin-right: auto;
     }
 
     .hero-buttons {
@@ -488,7 +510,8 @@
 
     /* ===== Section Headings ===== */
     .section-title {
-        font-size: clamp(2rem, 2.5vw, 3rem);
+        font-size: clamp(2rem, 4vw, 2.8rem);
+    line-height: 1.3;
         font-weight: 800;
         text-align: center;
         margin-bottom: 80px;
@@ -1079,6 +1102,20 @@
 
 /* ===== Responsive Design ===== */
 
+@media (min-width: 1600px) {
+    .hero-title {
+        font-size: 3.2rem; /* Fixed size for very large screens */
+    }
+    
+    #hero-subtitle {
+        font-size: 1.3rem;
+    }
+    
+    .section-title {
+        font-size: 2.6rem;
+    }
+}
+
 /* Large Desktops (1440px and above) */
 @media (min-width: 1441px) {
     #nav-bar {
@@ -1269,7 +1306,12 @@
         padding: 12px 0;
         text-align: center;
         margin: 0;
+         gap: 4px;
     }
+
+  .resume-btn i {
+    font-size: 1rem;
+  }
 
     #hamburger {
         display: flex;
