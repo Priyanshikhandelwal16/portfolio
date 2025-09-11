@@ -77,24 +77,38 @@ window.addEventListener('load', function() {
         });
 
         // Mobile Menu
-        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
-        const mobileMenu = document.querySelector('.mobile-menu');
-        const mobileNavLinks = document.querySelectorAll('.mobile-nav-links a');
+        // Select elements
+const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+const mobileMenu = document.querySelector('.mobile-menu');
+const mobileNavLinks = document.querySelectorAll('.mobile-nav-links a');
 
-        mobileMenuBtn.addEventListener('click', function() {
-            this.classList.toggle('active');
-            mobileMenu.classList.toggle('show');
-            document.body.style.overflow = mobileMenu.classList.contains('show') ? 'hidden' : '';
-        });
+// Toggle mobile menu and cross icon
+mobileMenuBtn.addEventListener('click', () => {
+    mobileMenuBtn.classList.toggle('active'); // Animate hamburger to cross
+    mobileMenu.classList.toggle('show');      // Slide mobile menu in/out
 
-        // Close mobile menu when clicking on a link
-        mobileNavLinks.forEach(link => {
-            link.addEventListener('click', () => {
-                mobileMenuBtn.classList.remove('active');
-                mobileMenu.classList.remove('show');
-                document.body.style.overflow = '';
-            });
-        });
+    // Disable scroll when menu is open
+    document.body.style.overflow = mobileMenu.classList.contains('show') ? 'hidden' : '';
+});
+
+// Close mobile menu when a link is clicked
+mobileNavLinks.forEach(link => {
+    link.addEventListener('click', () => {
+        mobileMenuBtn.classList.remove('active'); // Reset cross icon
+        mobileMenu.classList.remove('show');      // Hide mobile menu
+        document.body.style.overflow = '';        // Restore scroll
+    });
+});
+
+// Optional: close menu when clicking outside the menu
+document.addEventListener('click', (e) => {
+    if (!mobileMenu.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
+        mobileMenuBtn.classList.remove('active');
+        mobileMenu.classList.remove('show');
+        document.body.style.overflow = '';
+    }
+});
+
 
         // Header scroll effect
         const header = document.querySelector('header');

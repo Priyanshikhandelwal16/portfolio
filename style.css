@@ -593,6 +593,8 @@
             flex-direction: column;
             gap: 4px;
             touch-action: manipulation;
+            position: relative;
+            z-index: 1100;
         }
 
         .hamburger-line {
