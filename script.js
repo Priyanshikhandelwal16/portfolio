@@ -20,18 +20,28 @@ window.addEventListener("load", () => {
       tl.to("header", { y: 0, opacity: 1, duration: 0.6, ease: "power2.out" });
 
       // Hero text + image
-      tl.to([".hero-text", ".hero-img"], { opacity: 1, y: 0, duration: 0.6, stagger: 0.1, ease: "power2.out" }, "-=0.3");
+      tl.to(
+        [".hero-text", ".hero-img"],
+        { opacity: 1, y: 0, duration: 0.6, stagger: 0.1, ease: "power2.out" },
+        "-=0.3"
+      );
 
       // Hero buttons
-      tl.to(".hero-buttons a", { opacity: 1, y: 0, duration: 0.5, stagger: 0.1, ease: "power2.out" }, "-=0.3");
+      tl.to(
+        ".hero-buttons a",
+        { opacity: 1, y: 0, duration: 0.5, stagger: 0.1, ease: "power2.out" },
+        "-=0.3"
+      );
 
       // Social icons
-      tl.to(".social-icons a", { opacity: 1, y: 0, duration: 0.5, stagger: 0.1, ease: "power2.out" }, "-=0.3");
+      tl.to(
+        ".social-icons a",
+        { opacity: 1, y: 0, duration: 0.5, stagger: 0.1, ease: "power2.out" },
+        "-=0.3"
+      );
     }
   }, 100);
 });
-
-
 
 // ===== Custom Cursor =====
 const cursor = document.querySelector(".cursor");
@@ -301,16 +311,15 @@ gsap.utils.toArray(".project-card").forEach((card) => {
 VanillaTilt.init(document.querySelectorAll(".project-card"), {
   max: 15,
   speed: 400,
-  glare: true
+  glare: true,
 });
 
 gsap.from(".project-card img", {
   clipPath: "inset(100% 0 0 0)",
   duration: 1,
   ease: "power4.out",
-  scrollTrigger: ".project-card"
+  scrollTrigger: ".project-card",
 });
-
 
 // Optional: smooth staggered reveal if cards are in a grid
 gsap.from(".projects-grid", {
@@ -324,7 +333,6 @@ gsap.from(".projects-grid", {
   ease: "power2.out",
   stagger: 0.2, // smooth cascading effect
 });
-
 
 // ===== Parallax Floating Elements =====
 window.addEventListener("scroll", () => {
@@ -393,4 +401,3 @@ console.log(
   "%c🚀 Built with HTML, CSS, and vanilla JavaScript",
   "color: #10b981; font-size: 12px;"
 );
-

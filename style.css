@@ -799,15 +799,15 @@ header.scrolled {
 }
 
 .hero-buttons a {
-  display: inline-flex;          /* aligns icon + text properly */
-  align-items: center;           /* vertically center content */
-  justify-content: center;       /* center content horizontally */
-  gap: 0.5rem;                   /* space between icon and text */
-  padding: 0.75rem 1.5rem;       /* enough space for the text */
+  display: inline-flex; /* aligns icon + text properly */
+  align-items: center; /* vertically center content */
+  justify-content: center; /* center content horizontally */
+  gap: 0.5rem; /* space between icon and text */
+  padding: 0.75rem 1.5rem; /* enough space for the text */
   font-size: 1rem;
   border-radius: var(--radius);
   text-decoration: none;
-  white-space: nowrap;           /* prevents text from breaking */
+  white-space: nowrap; /* prevents text from breaking */
   transition: var(--transition);
 }
 
@@ -1750,7 +1750,7 @@ textarea.form-control {
     font-size: 3rem;
   }
 
-    .hero-buttons a {
+  .hero-buttons a {
     width: 100%;
     text-align: center;
     padding: 1rem 1.5rem;
@@ -1798,7 +1798,7 @@ textarea.form-control {
 }
 
 @media (max-width: 768px) {
-  .btn, 
+  .btn,
   .social-icons a,
   .project-link {
     min-height: 44px; /* Minimum touch target size */
@@ -1806,7 +1806,7 @@ textarea.form-control {
     align-items: center;
     justify-content: center;
   }
-  
+
   /* Improve form inputs on mobile */
   .form-control {
     font-size: 16px; /* Prevents zoom on iOS */

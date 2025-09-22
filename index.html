@@ -610,7 +610,7 @@
 
           <div class="contact-form animate-on-scroll animate-delay-200">
             <h3>Send me a message</h3>
-            <form>
+            <form id="contact-form">
               <div class="form-group">
                 <label for="name">Your Name</label>
                 <input
@@ -738,7 +738,33 @@
 
     <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
     <script>
-      emailjs.init("UvtZ1cmgVB3_QgPE9"); // Replace with your EmailJS user ID
+      (function () {
+        emailjs.init("UvtZ1cmgVB3_QgPE9"); // ✅ Your Public Key
+      })();
+
+      document
+        .getElementById("contact-form")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+
+          const templateParams = {
+            from_name: document.getElementById("name").value,
+            from_email: document.getElementById("email").value,
+            subject: document.getElementById("subject").value,
+            message: document.getElementById("message").value,
+          };
+
+          emailjs
+            .send("priyanshikh16@gmail.com", "template_3o5i6w6", templateParams) // ✅ Use Service ID
+            .then(function (response) {
+              alert("✅ Message sent successfully!");
+              document.getElementById("contact-form").reset();
+            })
+            .catch(function (error) {
+              alert("❌ Failed to send message. Please try again.");
+              console.error("EmailJS Error:", error);
+            });
+        });
     </script>
 
     <script src="script.js"></script>
