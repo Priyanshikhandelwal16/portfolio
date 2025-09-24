@@ -18,16 +18,17 @@
 }
 
 :root[data-theme="light"] {
-  --bg-primary: #f4f7fb; /* halka soothing background */
-  --bg-secondary: #ffffff; /* card / section ke liye clean */
-  --text-primary: #1e293b; /* deep gray instead of black */
-  --text-secondary: #64748b; /* soft gray-blue for less stress */
-  --primary: #3b82f6; /* softer blue */
-  --secondary: #8b5cf6; /* purple accent */
-  --accent: #14b8a6; /* teal accent */
+  --bg-primary: #f0f2f5;       /* softer, warmish white instead of bright white */
+  --bg-secondary: #f8f9fa;     /* very subtle card background */
+  --text-primary: #1f2937;     /* dark gray, less contrast than pure black */
+  --text-secondary: #4b5563;   /* soft gray-blue for secondary text */
+  --primary: #5b6def;          /* softer blue, less harsh */
+  --secondary: #9b5cf6;        /* purple accent, a bit muted */
+  --accent: #0ca99e;           /* teal accent softer */
   --gradient: linear-gradient(135deg, var(--primary), var(--secondary));
-  --glow: 0 0 15px rgba(59, 130, 246, 0.25); /* subtle glow */
+  --glow: 0 0 12px rgba(91, 109, 239, 0.25); /* subtle glow for elements */
 }
+
 
 body {
   font-family: "Inter", sans-serif;
@@ -617,7 +618,7 @@ body.menu-open {
   border-radius: 50%;
   background: var(
     --gradient
-  ); /* agar plain color chahiye toh yaha change kar dena */
+  ); 
   display: flex;
   align-items: center;
   justify-content: center;
@@ -629,7 +630,7 @@ body.menu-open {
 }
 
 .hero-avatar:hover {
-  transform: scale(1.08); /* bas zoom on hover */
+  transform: scale(1.02); /* bas zoom on hover */
 }
 /* Morphing Shapes */
 .hero-shapes {
